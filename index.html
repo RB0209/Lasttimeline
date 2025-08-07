@@ -43,8 +43,13 @@
     }
     .tiles {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
       gap: 25px;
+    }
+    @media (min-width: 1200px) {
+      .tiles {
+        grid-template-columns: repeat(4, 1fr);
+      }
     }
     .tile {
       background-color: white;
@@ -64,7 +69,7 @@
     }
     .tile img {
       width: 100%;
-      height: 200px;
+      height: 180px;
       object-fit: cover;
       transition: transform 0.3s ease;
     }
@@ -73,13 +78,13 @@
     }
     .tile-title {
       padding: 18px 20px 10px;
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       font-weight: bold;
       color: #38b6ff;
     }
     .tile-desc {
       padding: 0 20px 20px;
-      font-size: 1rem;
+      font-size: 0.95rem;
       line-height: 1.5;
       display: none;
       color: #333;
@@ -101,7 +106,7 @@
         {
           title: "Social Awareness through Local Public Events and Programs during Festivals",
           desc: "Founded in 2011 in the slums of Khar East, Mumbai, CARE FOUNDATION began its journey as a youth-led initiative driven by purpose and passion. The young team started with small awareness drives and impactful programs during festivals and public functions, aiming to spread positivity and social consciousness in their community. Through these early efforts, they inspired change, empowered residents, and laid the foundation for a brighter, more hopeful future — one slum, one story, one smile at a time.",
-          img: "image 1.jpg"
+          img: "image1.jpg"
         }
       ],
       2012: [
@@ -223,7 +228,7 @@
       });
     }
 
-    loadTiles('2011'); // Load initial view
+    loadTiles('2011');
   </script>
 </body>
 </html>
