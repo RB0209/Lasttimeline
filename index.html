@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Timeline Tiles with Modal</title>
   <style>
     body {
@@ -12,7 +12,7 @@
       padding: 20px;
     }
     .timeline-container {
-      max-width: 1300px;
+      max-width: 1400px;
       margin: auto;
     }
     .year-selector {
@@ -43,184 +43,258 @@
     }
     .tiles {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 25px;
     }
     .tile {
       background-color: white;
-      border-radius: 16px;
+      border-radius: 20px;
       box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
       overflow: hidden;
       transition: transform 0.4s, box-shadow 0.4s;
       cursor: pointer;
+      position: relative;
+      height: 360px;
       display: flex;
       flex-direction: column;
-      height: 400px;
     }
     .tile:hover {
-      transform: scale(1.04);
+      transform: scale(1.05);
       box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
     }
     .tile img {
       width: 100%;
       height: 260px;
       object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+    .tile:hover img {
+      transform: scale(1.05);
     }
     .tile-title {
       padding: 10px 16px 4px;
-      font-size: 1.1rem;
-      font-weight: 600;
+      font-size: 1rem;
+      font-weight: bold;
       color: #38b6ff;
     }
     .tile-desc {
       padding: 0 16px 12px;
       font-size: 0.9rem;
-      color: #444;
+      color: #555;
       overflow: hidden;
-      text-overflow: ellipsis;
       white-space: nowrap;
+      text-overflow: ellipsis;
     }
-
-    /* Modal */
-    .modal-overlay {
+    .modal {
       position: fixed;
       top: 0;
       left: 0;
+      width: 100vw;
       height: 100vh;
-      width: 100%;
-      background: rgba(0,0,0,0.5);
-      display: none;
+      background-color: rgba(0, 0, 0, 0.6);
+      display: flex;
       align-items: center;
       justify-content: center;
       z-index: 999;
     }
     .modal-content {
       background-color: white;
-      max-width: 600px;
+      border-radius: 16px;
+      padding: 24px;
+      max-width: 700px;
       width: 90%;
-      padding: 20px;
-      border-radius: 14px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      max-height: 90vh;
+      overflow-y: auto;
       position: relative;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      animation: fadeIn 0.3s ease-in-out;
     }
     .modal-content img {
       width: 100%;
-      height: 260px;
-      object-fit: cover;
+      height: auto;
       border-radius: 10px;
       margin-bottom: 16px;
     }
-    .modal-content h3 {
-      margin: 0 0 10px;
-      color: #38b6ff;
-    }
-    .modal-content p {
-      color: #333;
-      font-size: 0.95rem;
-    }
-    .modal-close {
+    .close-btn {
       position: absolute;
-      top: 12px;
+      top: 10px;
       right: 16px;
-      font-size: 22px;
+      font-size: 1.5rem;
       cursor: pointer;
-      color: #aaa;
+      color: #888;
     }
-    .modal-close:hover {
-      color: #000;
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
     }
   </style>
 </head>
 <body>
-
-<div class="timeline-container">
-  <div class="year-selector" id="yearSelector"></div>
-  <div class="tiles" id="tilesContainer"></div>
-</div>
-
-<div class="modal-overlay" id="modalOverlay">
-  <div class="modal-content">
-    <span class="modal-close" id="modalClose">&times;</span>
-    <img id="modalImg" src="" alt=""/>
-    <h3 id="modalTitle"></h3>
-    <p id="modalDesc"></p>
+  <div class="timeline-container">
+    <div class="year-selector" id="yearSelector"></div>
+    <div class="tiles" id="tilesContainer"></div>
   </div>
-</div>
+  <div id="modal" class="modal" style="display: none;" onclick="closeModal(event)">
+    <div class="modal-content" id="modalContent">
+      <span class="close-btn" onclick="closeModal(event)">&times;</span>
+      <img id="modalImage" src="" alt="" />
+      <h2 id="modalTitle"></h2>
+      <p id="modalDesc"></p>
+    </div>
+  </div>
+  <script>
+    const data = {
+      2011: [
+        {
+          title: "Social Awareness through Local Public Events and Programs during Festivals",
+          desc: "Founded in 2011 in the slums of Khar East, Mumbai, CARE FOUNDATION began its journey as a youth-led initiative driven by purpose and passion. The young team started with small awareness drives and impactful programs during festivals and public functions, aiming to spread positivity and social consciousness in their community.",
+          img: "image 1.jpg"
+        }
+      ],
+      2012: [
+        { title: "National Flag Pride Rally" },
+        { title: "Socio-cultural program for youth motivation" }
+      ],
+      2013: [
+        { title: "National Flag Pride Rally" },
+        { title: "Socio-cultural program for youth motivation" },
+        { title: "Summer camps and winter camps" },
+        { title: "Radio City 91.1 FM" }
+      ],
+      2014: [
+        { title: "National Flag Pride Rally" },
+        { title: "Summer camps and winter camps" }
+      ],
+      2015: [
+        { title: "National Flag Pride Rally" },
+        { title: "P3 Pre Primary" },
+        { title: "Summer camps and winter camps" }
+      ],
+      2016: [
+        { title: "National Flag Pride Rally" },
+        { title: "P3 Pre Primary" },
+        { title: "Youth motivation programs" }
+      ],
+      2017: [
+        { title: "National Flag Pride Rally" },
+        { title: "FANACT" },
+        { title: "DANSEN" },
+        { title: "P3 Pre Primary" }
+      ],
+      2018: [
+        { title: "National Flag Pride Rally" },
+        { title: "FANACT" },
+        { title: "Legal Awareness Seminar" },
+        { title: "AABAA" },
+        { title: "P3 Pre Primary" },
+        { title: "Digi Womania Seminar" },
+        { title: "Notebooks distribution" },
+        { title: "Radio City 91.1 FM" }
+      ],
+      2019: [
+        { title: "National Flag Pride Campaign" },
+        { title: "Legal Awareness Seminars" },
+        { title: "DIGI WOMANIA Seminar" },
+        { title: "P3 Pre Primary" },
+        { title: "Kerala flood donation" },
+        { title: "Medical camp" }
+      ],
+      2020: [
+        { title: "National Flag Pride Campaign" },
+        { title: "Food, Water, Mask & Sanitizer Distribution" },
+        { title: "Medical camp" },
+        { title: "Sanitary pad distribution" }
+      ],
+      2021: [
+        { title: "National Flag Pride Campaign" },
+        { title: "Food & Water Distribution, Masks, Sanitizers" },
+        { title: "Medical Aid under Project ASHA" },
+        { title: "Juhu beach cleaning" }
+      ],
+      2022: [
+        { title: "National Flag Pride Campaign" },
+        { title: "Food & Water Distribution" },
+        { title: "Masks, Sanitizers, Stationary Kit Distribution" },
+        { title: "Sanitary pad distribution" }
+      ],
+      2023: [
+        { title: "Project ASHA" },
+        { title: "Feed The Need" },
+        { title: "Stationary kit distribution" }
+      ],
+      2024: [
+        { title: "Project ASHA" },
+        { title: "Feed The Need" },
+        { title: "Stationary kit distribution" },
+        { title: "Food distribution" }
+      ],
+      2025: [
+        { title: "Project ASHA" },
+        { title: "Feed The Need" },
+        { title: "Stationary kit distribution" },
+        { title: "Food distribution" }
+      ]
+    };
 
-<script>
-  const timelineData = {
-    2011: [
-      {
-        title: "Social Awareness through Local Public Events and Programs during Festivals",
-        desc: "Founded in 2011 in the slums of Khar East, Mumbai, CARE FOUNDATION began its journey as a youth-led initiative driven by purpose and passion. The young team started with small awareness drives and impactful programs during festivals and public functions, aiming to spread positivity and social consciousness in their community. Through these early efforts, they inspired change, empowered residents, and laid the foundation for a brighter, more hopeful future — one slum, one story, one smile at a time.",
-        img: "image 1.jpg"
-      }
-    ],
-    2012: [
-      { title: "National Flag Pride Rally" },
-      { title: "Socio-cultural program for youth motivation" }
-    ]
-  };
+    const yearSelector = document.getElementById("yearSelector");
+    const tilesContainer = document.getElementById("tilesContainer");
+    const modal = document.getElementById("modal");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalDesc = document.getElementById("modalDesc");
+    const modalImage = document.getElementById("modalImage");
 
-  const yearSelector = document.getElementById('yearSelector');
-  const tilesContainer = document.getElementById('tilesContainer');
-  const modalOverlay = document.getElementById('modalOverlay');
-  const modalTitle = document.getElementById('modalTitle');
-  const modalDesc = document.getElementById('modalDesc');
-  const modalImg = document.getElementById('modalImg');
-  const modalClose = document.getElementById('modalClose');
-
-  Object.keys(timelineData).forEach((year, idx) => {
-    const btn = document.createElement('button');
-    btn.className = 'year-btn';
-    btn.textContent = year;
-    if (idx === 0) btn.classList.add('active');
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.year-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      loadTiles(year);
-    });
-    yearSelector.appendChild(btn);
-  });
-
-  function loadTiles(year) {
-    tilesContainer.innerHTML = '';
-    timelineData[year].forEach(project => {
-      const tile = document.createElement('div');
-      tile.className = 'tile';
-      const title = project.title || "Untitled Project";
-      const desc = project.desc || "";
-      const img = project.img || `https://via.placeholder.com/400x260?text=${encodeURIComponent(title)}`;
-
-      tile.innerHTML = `
-        <img src="${img}" alt="${title}" />
-        <div class="tile-title">${title}</div>
-        <div class="tile-desc">${desc.substring(0, 60)}...</div>
-      `;
-
-      tile.addEventListener('click', () => {
-        modalTitle.textContent = title;
-        modalDesc.textContent = desc;
-        modalImg.src = img;
-        modalOverlay.style.display = 'flex';
+    Object.keys(data).forEach((year, idx) => {
+      const btn = document.createElement("button");
+      btn.className = "year-btn";
+      btn.textContent = year;
+      if (idx === 0) btn.classList.add("active");
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".year-btn").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        loadTiles(year);
       });
-
-      tilesContainer.appendChild(tile);
+      yearSelector.appendChild(btn);
     });
-  }
 
-  modalClose.addEventListener('click', () => {
-    modalOverlay.style.display = 'none';
-  });
-
-  window.addEventListener('click', (e) => {
-    if (e.target === modalOverlay) {
-      modalOverlay.style.display = 'none';
+    function loadTiles(year) {
+      tilesContainer.innerHTML = "";
+      data[year].forEach((project) => {
+        const tile = document.createElement("div");
+        tile.className = "tile";
+        const title = project.title;
+        const desc = project.desc || "Click to learn more.";
+        const img = project.img || `https://via.placeholder.com/400x240?text=${encodeURIComponent(title)}`;
+        tile.innerHTML = `
+          <img src="${img}" alt="${title}" />
+          <div class="tile-title">${title}</div>
+          <div class="tile-desc">${desc}</div>
+        `;
+        tile.addEventListener("click", () => {
+          modal.style.display = "flex";
+          modalTitle.textContent = title;
+          modalDesc.textContent = desc;
+          modalImage.src = img;
+        });
+        tilesContainer.appendChild(tile);
+      });
     }
-  });
 
-  loadTiles('2011');
-</script>
+    function closeModal(event) {
+      if (
+        event.target.classList.contains("modal") ||
+        event.target.classList.contains("close-btn")
+      ) {
+        modal.style.display = "none";
+      }
+    }
 
+    loadTiles("2011");
+  </script>
 </body>
 </html>
