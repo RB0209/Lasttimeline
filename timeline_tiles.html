@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Timeline Tiles</title>
+  <style>
+    body {
+      background-color: #f9f9f8;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+    .timeline-container {
+      max-width: 1300px;
+      margin: auto;
+    }
+    .year-selector {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 35px;
+    }
+    .year-btn {
+      background-color: white;
+      border: 2px solid #38b6ff;
+      color: #38b6ff;
+      padding: 12px 26px;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 600;
+      font-size: 1rem;
+      box-shadow: 0 4px 10px rgba(56, 182, 255, 0.2);
+    }
+    .year-btn:hover,
+    .year-btn.active {
+      background-color: #38b6ff;
+      color: white;
+      transform: translateY(-3px);
+      box-shadow: 0 6px 14px rgba(56, 182, 255, 0.4);
+    }
+    .tiles {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 25px;
+    }
+    .tile {
+      background-color: white;
+      border-radius: 20px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+      transition: transform 0.4s, box-shadow 0.4s;
+      cursor: pointer;
+      position: relative;
+      min-height: 440px;
+      display: flex;
+      flex-direction: column;
+    }
+    .tile:hover {
+      transform: scale(1.05);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+    }
+    .tile img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+    .tile:hover img {
+      transform: scale(1.1);
+    }
+    .tile-title {
+      padding: 18px 20px 10px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #38b6ff;
+    }
+    .tile-desc {
+      padding: 0 20px 20px;
+      font-size: 1rem;
+      line-height: 1.5;
+      display: none;
+      color: #333;
+    }
+    .tile.expanded .tile-desc {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="timeline-container">
+    <div class="year-selector" id="yearSelector"></div>
+    <div class="tiles" id="tilesContainer"></div>
+  </div>
+
+  <script>
+    const timelineData = {
+      2011: [
+        {
+          title: "Social Awareness through Local Public Events and Programs during Festivals",
+          desc: "Founded in 2011 in the slums of Khar East, Mumbai, CARE FOUNDATION began its journey as a youth-led initiative driven by purpose and passion. The young team started with small awareness drives and impactful programs during festivals and public functions, aiming to spread positivity and social consciousness in their community. Through these early efforts, they inspired change, empowered residents, and laid the foundation for a brighter, more hopeful future — one slum, one story, one smile at a time.",
+          img: "image 1.jpg"
+        }
+      ],
+      2012: [
+        { title: "National Flag Pride Rally" },
+        { title: "Socio-cultural program for youth motivation" }
+      ],
+      2013: [
+        { title: "National Flag Pride Rally" },
+        { title: "Socio-cultural program for youth motivation" },
+        { title: "Summer camps and winter camps" },
+        { title: "Radio City 91.1 FM" }
+      ],
+      2014: [
+        { title: "National Flag Pride Rally" },
+        { title: "Summer camps and winter camps" }
+      ],
+      2015: [
+        { title: "National Flag Pride Rally" },
+        { title: "P3 Pre Primary" },
+        { title: "Summer camps and winter camps" }
+      ],
+      2016: [
+        { title: "National Flag Pride Rally" },
+        { title: "P3 Pre Primary" },
+        { title: "Youth motivation programs" }
+      ],
+      2017: [
+        { title: "National Flag Pride Rally" },
+        { title: "FANACT" },
+        { title: "DANSEN" },
+        { title: "P3 Pre Primary" }
+      ],
+      2018: [
+        { title: "National Flag Pride Rally" },
+        { title: "FANACT" },
+        { title: "Legal Awareness Seminar" },
+        { title: "AABAA" },
+        { title: "P3 Pre Primary" },
+        { title: "Digi Womania Seminar" },
+        { title: "Notebooks distribution" },
+        { title: "Radio City 91.1 FM" }
+      ],
+      2019: [
+        { title: "National Flag Pride Campaign" },
+        { title: "Legal Awareness Seminars" },
+        { title: "DIGI WOMANIA Seminar" },
+        { title: "P3 Pre Primary" },
+        { title: "Kerala flood donation" },
+        { title: "Medical camp" }
+      ],
+      2020: [
+        { title: "National Flag Pride Campaign" },
+        { title: "Food, Water, Mask & Sanitizer Distribution" },
+        { title: "Medical camp" },
+        { title: "Sanitary pad distribution" }
+      ],
+      2021: [
+        { title: "National Flag Pride Campaign" },
+        { title: "Food & Water Distribution, Masks, Sanitizers" },
+        { title: "Medical Aid under Project ASHA" },
+        { title: "Juhu beach cleaning" }
+      ],
+      2022: [
+        { title: "National Flag Pride Campaign" },
+        { title: "Food & Water Distribution" },
+        { title: "Masks, Sanitizers, Stationary Kit Distribution" },
+        { title: "Sanitary pad distribution" }
+      ],
+      2023: [
+        { title: "Project ASHA" },
+        { title: "Feed The Need" },
+        { title: "Stationary kit distribution" }
+      ],
+      2024: [
+        { title: "Project ASHA" },
+        { title: "Feed The Need" },
+        { title: "Stationary kit distribution" },
+        { title: "Food distribution" }
+      ],
+      2025: [
+        { title: "Project ASHA" },
+        { title: "Feed The Need" },
+        { title: "Stationary kit distribution" },
+        { title: "Food distribution" }
+      ]
+    };
+
+    const yearSelector = document.getElementById('yearSelector');
+    const tilesContainer = document.getElementById('tilesContainer');
+
+    Object.keys(timelineData).forEach((year, idx) => {
+      const btn = document.createElement('button');
+      btn.className = 'year-btn';
+      btn.textContent = year;
+      if (idx === 0) btn.classList.add('active');
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.year-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        loadTiles(year);
+      });
+      yearSelector.appendChild(btn);
+    });
+
+    function loadTiles(year) {
+      tilesContainer.innerHTML = '';
+      timelineData[year].forEach(project => {
+        const tile = document.createElement('div');
+        tile.className = 'tile';
+        const title = typeof project === 'string' ? project : project.title;
+        const desc = typeof project === 'object' && project.desc ? project.desc : `This is a description area for "${title}". You can customize it.`;
+        const img = project.img ? project.img : `https://via.placeholder.com/400x200?text=${encodeURIComponent(title)}`;
+        tile.innerHTML = `
+          <img src="${img}" alt="${title}" />
+          <div class="tile-title">${title}</div>
+          <div class="tile-desc">${desc}</div>
+        `;
+        tile.addEventListener('click', () => tile.classList.toggle('expanded'));
+        tilesContainer.appendChild(tile);
+      });
+    }
+
+    loadTiles('2011'); // Load initial view
+  </script>
+</body>
+</html>
